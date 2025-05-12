@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media
+
+# Environnement virtuel
+venv/
+ENV/
+env/
+
+# Fichiers sensibles
+.env
+.env.*
+secret_key.txt
+
+# Modèles IA
+*.pt
+*.pth
+*.weights
+yolov8n.pt
+models/
+
+# Divers
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+.project
+.pydevproject
+.settings/
+
+# Fichiers spécifiques au projet
+staticfiles/
+uploads/
+logs/ 

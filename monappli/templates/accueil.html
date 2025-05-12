@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Liste des Objets Défectueux</h1>
+        <a href="{% url 'ajouter' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Ajouter un objet
+        </a>
+    </div>
+
+    {% if objets %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nom du produit</th>
+                        <th>Date d'inspection</th>
+                        <th>Statut</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for objet in objets %}
+                    <tr>
+                        <td>{{ objet.nom_produit }}</td>
+                        <td>{{ objet.date_inspection|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <span class="badge {% if objet.status == 'DEFECTUEUX' %}bg-danger{% else %}bg-success{% endif %}">
+                                {{ objet.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ objet.description|truncatewords:20 }}</td>
+                        <td>
+                            <a href="{% url 'detail_objet' objet.pk %}" class="btn btn-sm btn-info me-2">Détails</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-4">
+            <nav aria-label="Navigation des pages">
+                <ul class="pagination justify-content-center">
+                    {% if objets.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ objets.previous_page_number }}">&laquo; Précédent</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo; Précédent</span>
+                        </li>
+                    {% endif %}
+
+                    {% for num in objets.paginator.page_range %}
+                        <li class="page-item {% if objets.number == num %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {% if objets.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ objets.next_page_number }}">Suivant &raquo;</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Suivant &raquo;</span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Aucun objet défectueux n'a été enregistré pour le moment.
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

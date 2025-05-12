@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0">Confirmer la suppression</h2>
+                </div>
+                <div class="card-body">
+                    <p>Êtes-vous sûr de vouloir mettre cet objet dans la corbeille ?</p>
+                    <p><strong>Nom du produit :</strong> {{ objet.nom_produit }}</p>
+                    
+                    <form method="post" action="{% url 'supprimer_objet' objet.pk %}">
+                        {% csrf_token %}
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-danger">Oui, mettre dans la corbeille</button>
+                            <a href="{% url 'detail_objet' objet.pk %}" class="btn btn-secondary">Non, annuler</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

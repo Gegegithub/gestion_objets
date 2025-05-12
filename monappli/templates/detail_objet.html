@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h2>{{ objet.nom_produit }}</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Status:</strong> {{ objet.status }}</p>
+                    <p><strong>Description:</strong> {{ objet.description }}</p>
+                    <p><strong>Date d'inspection:</strong> {{ objet.date_inspection|date:"d/m/Y H:i" }}</p>
+                    
+                    {% if objet.image_url %}
+                    <div class="mb-4">
+                        <img src="{{ objet.image_url }}" alt="{{ objet.nom_produit }}" class="img-fluid">
+                        <button id="analyseBtn" class="btn btn-info mt-2">Analyser l'image avec IA</button>
+                    </div>
+                    {% endif %}
+
+                    <div id="analyseResults" class="mt-3" style="display: none;">
+                        <h4>Résultats de l'analyse</h4>
+                        <div class="alert" role="alert" id="analyseMessage"></div>
+                        <div id="detectionsList"></div>
+                        <div id="annotatedImage" class="mt-3">
+                            <h5>Image analysée</h5>
+                            <img id="yoloImage" class="img-fluid" alt="Image analysée par YOLO">
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{% url 'modifier_objet' objet.pk %}" class="btn btn-primary">Modifier</a>
+                        {% if user.is_superuser %}
+                        <a href="{% url 'confirmer_suppression' objet.pk %}" class="btn btn-danger">Mettre dans la corbeille</a>
+                        {% endif %}
+                        <a href="{% url 'accueil' %}" class="btn btn-secondary">Retour à la liste</a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h4>Historique des analyses</h4>
+                    <div id="analysesHistorique">
+                        {% for analyse in objet.analyses.all %}
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">{{ analyse.date_analyse|date:"d/m/Y H:i" }}</h6>
+                                <p class="card-text">{{ analyse.message }}</p>
+                                {% if analyse.succes %}
+                                    {% if analyse.image_annotee %}
+                                    <img src="data:image/jpeg;base64,{{ analyse.image_annotee }}" class="img-fluid mb-3" alt="Image analysée">
+                                    {% endif %}
+                                    <ul class="list-group">
+                                        {% for detection in analyse.resultats %}
+                                        <li class="list-group-item">
+                                            {{ detection.class }} (Confiance: {{ detection.confidence|floatformat:2 }})
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p>Aucune analyse effectuée</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('analyseBtn').addEventListener('click', function() {
+    this.disabled = true;
+    this.textContent = 'Analyse en cours...';
+    
+    fetch('{% url "analyser_objet" objet.pk %}')
+        .then(response => response.json())
+        .then(data => {
+            const resultsDiv = document.getElementById('analyseResults');
+            const messageDiv = document.getElementById('analyseMessage');
+            const detectionsDiv = document.getElementById('detectionsList');
+            const yoloImage = document.getElementById('yoloImage');
+            
+            resultsDiv.style.display = 'block';
+            messageDiv.textContent = data.message;
+            messageDiv.className = 'alert ' + (data.success ? 'alert-success' : 'alert-danger');
+            
+            if (data.success && data.detections.length > 0) {
+                let html = '<ul class="list-group">';
+                data.detections.forEach(detection => {
+                    html += `<li class="list-group-item">
+                        ${detection.class} (Confiance: ${detection.confidence.toFixed(2)})
+                    </li>`;
+                });
+                html += '</ul>';
+                detectionsDiv.innerHTML = html;
+
+                // Afficher l'image annotée
+                if (data.image_base64) {
+                    yoloImage.src = 'data:image/jpeg;base64,' + data.image_base64;
+                }
+            }
+            
+            // Recharger la page pour voir l'historique mis à jour
+            setTimeout(() => location.reload(), 3000);
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            document.getElementById('analyseMessage').textContent = "Erreur lors de l'analyse";
+            document.getElementById('analyseMessage').className = 'alert alert-danger';
+        })
+        .finally(() => {
+            this.disabled = false;
+            this.textContent = "Analyser l'image avec IA";
+        });
+});
+</script>
+{% endblock %}
