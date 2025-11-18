@@ -93,7 +93,3 @@ Une application Django permettant de cataloguer des objets (défectueux ou non) 
 ## Contribution
 
 Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou à soumettre une pull request.
-
-## Licence
-
-Ce projet est distribué sous licence MIT. Voir le fichier `LICENSE` pour plus d'informations. 
