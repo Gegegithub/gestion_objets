@@ -2,6 +2,10 @@
 
 Une application Django permettant de cataloguer des objets (défectueux ou non) avec une fonctionnalité d'analyse d'images par intelligence artificielle (YOLOv8).
 
+## Apparence
+
+Malheureusement, un aperçu visuelvde cette application Django de gestion d'objets avec analyse IA n'est disponible que sur LinkedIn : https://www.linkedin.com/posts/georges-birangou-09ab50356_django-python-yolov8-activity-7327848916022874112-pZJG?utm_medium=ios_app&rcm=ACoAAFjNeXYBn7Uk3wB2toMDCP60IaJxFUYbiRI&utm_source=social_share_send&utm_campaign=copy_link
+
 ## Fonctionnalités
 
 - 📋 **Gestion d'inventaire**
