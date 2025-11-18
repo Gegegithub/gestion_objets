@@ -27,7 +27,7 @@ Une application Django permettant de cataloguer des objets (défectueux ou non) 
 
 1. Cloner le dépôt
    ```
-   git clone https://github.com/votre-username/gestion-objets-ia.git
+   git clone https://github.com/gegegithub/gestion_objets.git/
    cd gestion-objets-ia
    ```
 
